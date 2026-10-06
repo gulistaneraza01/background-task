@@ -13,6 +13,20 @@ export const templates = {
       html: `<p>Hi ${escapeHtml(name ?? "there")}, thanks for registering.</p>`,
     }),
   },
+  accountDeletionScheduled: {
+    priority: PRIORITY.HIGH,
+    render: ({ name, restoreBy }: { name?: string | null; restoreBy: string }) => ({
+      subject: "Your account is scheduled for deletion",
+      html: `<p>Hi ${escapeHtml(name ?? "there")}, your account will be permanently deleted on ${escapeHtml(restoreBy)}. Restore it before then to keep your data.</p>`,
+    }),
+  },
+  accountRestored: {
+    priority: PRIORITY.HIGH,
+    render: ({ name }: { name?: string | null }) => ({
+      subject: "Your account has been restored",
+      html: `<p>Welcome back, ${escapeHtml(name ?? "there")}! Your account is active again.</p>`,
+    }),
+  },
   weeklyReport: {
     priority: PRIORITY.LOW,
     render: ({ since, newUsers }: { since: string; newUsers: number }) => ({

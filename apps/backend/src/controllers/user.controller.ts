@@ -3,11 +3,12 @@ import { enqueueEmail } from "../queues/email.queue";
 import { registerUser } from "../services/user.service";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const isEmail = (v: unknown): v is string => typeof v === "string" && EMAIL.test(v);
 const optionalString = (v: unknown) => v === undefined || typeof v === "string";
 
 export async function register(req: Request, res: Response) {
   const { email, name, username } = req.body ?? {};
-  if (typeof email !== "string" || !EMAIL.test(email) || !optionalString(name) || !optionalString(username)) {
+  if (!isEmail(email) || !optionalString(name) || !optionalString(username)) {
     return res.status(400).json({ error: "Invalid email, name or username" });
   }
   const user = await registerUser({ email: email.toLowerCase(), name, username });

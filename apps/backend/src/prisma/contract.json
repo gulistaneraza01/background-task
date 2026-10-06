@@ -22,6 +22,13 @@
                   "kind": "scalar"
                 }
               },
+              "deletedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "kind": "scalar"
+                }
+              },
               "email": {
                 "nullable": false,
                 "type": {
@@ -64,6 +71,9 @@
                 "createdAt": {
                   "column": "createdAt"
                 },
+                "deletedAt": {
+                  "column": "deletedAt"
+                },
                 "email": {
                   "column": "email"
                 },
@@ -103,6 +113,11 @@
                   },
                   "nativeType": "timestamptz",
                   "nullable": false
+                },
+                "deletedAt": {
+                  "codecId": "pg/timestamptz-string@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
                 },
                 "email": {
                   "codecId": "pg/text@1",
@@ -155,7 +170,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "5b589f4a2823c996da0b77ca64efe541fedee519a1b2450171336c2a169b0159"
+    "storageHash": "f7308a9714b03bcd652922b4886b7627a254cc5ab94b4fa837ba6ac753339c80"
   },
   "execution": {
     "executionHash": "76ee8948067fff39e1b787eafdf2c9319ebe5e0f5029f71536b4f58b92d7790e",
