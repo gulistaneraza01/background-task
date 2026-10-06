@@ -1,0 +1,245 @@
+[
+  {
+    "id": "table.Image",
+    "label": "Create table \"Image\"",
+    "summary": "Creates table \"Image\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Image"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Image\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Image\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Image\"",
+        "sql": "CREATE TABLE \"public\".\"Image\" (\n  \"contentType\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"error\" text,\n  \"height\" int4,\n  \"id\" SERIAL NOT NULL,\n  \"key\" text NOT NULL,\n  \"status\" text DEFAULT 'pending' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  \"width\" int4,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Image\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Image\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.ImageVariant",
+    "label": "Create table \"ImageVariant\"",
+    "summary": "Creates table \"ImageVariant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ImageVariant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ImageVariant\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ImageVariant\"",
+        "sql": "CREATE TABLE \"public\".\"ImageVariant\" (\n  \"height\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"imageId\" int4 NOT NULL,\n  \"key\" text NOT NULL,\n  \"label\" text NOT NULL,\n  \"size\" int4 NOT NULL,\n  \"width\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ImageVariant\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Image.Image_key_key",
+    "label": "Add unique constraint on \"Image\" (key)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Image_key_key",
+        "table": "Image"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Image_key_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Image_key_key",
+          "public",
+          "\"public\".\"Image\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Image_key_key\"",
+        "sql": "ALTER TABLE \"public\".\"Image\" ADD CONSTRAINT \"Image_key_key\" UNIQUE (\"key\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Image_key_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Image_key_key",
+          "public",
+          "\"public\".\"Image\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.ImageVariant.ImageVariant_imageId_label_key",
+    "label": "Add unique constraint on \"ImageVariant\" (imageId, label)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "ImageVariant_imageId_label_key",
+        "table": "ImageVariant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"ImageVariant_imageId_label_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ImageVariant_imageId_label_key",
+          "public",
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"ImageVariant_imageId_label_key\"",
+        "sql": "ALTER TABLE \"public\".\"ImageVariant\" ADD CONSTRAINT \"ImageVariant_imageId_label_key\" UNIQUE (\"imageId\", \"label\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"ImageVariant_imageId_label_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ImageVariant_imageId_label_key",
+          "public",
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ImageVariant.ImageVariant_imageId_idx_9d3c09ba",
+    "label": "Create index \"ImageVariant_imageId_idx_9d3c09ba\" on \"ImageVariant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ImageVariant_imageId_idx_9d3c09ba",
+        "table": "ImageVariant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ImageVariant_imageId_idx_9d3c09ba\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ImageVariant_imageId_idx_9d3c09ba\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ImageVariant_imageId_idx_9d3c09ba\"",
+        "sql": "CREATE INDEX \"ImageVariant_imageId_idx_9d3c09ba\" ON \"public\".\"ImageVariant\" (\"imageId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ImageVariant_imageId_idx_9d3c09ba\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ImageVariant_imageId_idx_9d3c09ba\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ImageVariant.ImageVariant_imageId_fkey",
+    "label": "Add foreign key \"ImageVariant_imageId_fkey\" on \"ImageVariant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ImageVariant_imageId_fkey",
+        "table": "ImageVariant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ImageVariant_imageId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ImageVariant_imageId_fkey",
+          "public",
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ImageVariant_imageId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ImageVariant\"\nADD CONSTRAINT \"ImageVariant_imageId_fkey\"\nFOREIGN KEY (\"imageId\")\nREFERENCES \"public\".\"Image\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ImageVariant_imageId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ImageVariant_imageId_fkey",
+          "public",
+          "\"public\".\"ImageVariant\""
+        ]
+      }
+    ]
+  }
+]
