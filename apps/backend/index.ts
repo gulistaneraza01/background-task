@@ -1,11 +1,13 @@
 import express from 'express';
+import helmet from 'helmet';
+import { userRouter } from './src/routes/user.routes';
 
 const app = express();
 
-app.get('/', (_req, res) => {
-  res.json({ message: 'Hello World!' });
-});
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(userRouter);
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+const port = Number(process.env.PORT) || 3000;
+app.listen(port, () => console.log(`listening on :${port}`));
