@@ -5,6 +5,32 @@ model User {
   email     String   @unique
   username  String?
   name      String?
+  deletedAt TimestamptzString?
   createdAt TimestamptzString @default(now())
   updatedAt temporal.updatedAtString()
+}
+
+model Image {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  contentType String
+  status      String   @default("pending")
+  error       String?
+  width       Int?
+  height      Int?
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model ImageVariant {
+  id      Int    @id @default(autoincrement())
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId Int
+  label   String
+  width   Int
+  height  Int
+  key     String
+  size    Int
+
+  @@unique([imageId, label])
 }
