@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { welcomeQueue } from "../queues/welcome.queue";
+import { enqueueEmail } from "../queues/email.queue";
 import { registerUser } from "../services/user.service";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -12,6 +12,6 @@ export async function register(req: Request, res: Response) {
   }
   const user = await registerUser({ email: email.toLowerCase(), name, username });
   if (!user) return res.status(409).json({ error: "Email already registered" });
-  await welcomeQueue.add("welcome", { userId: user.id, email: user.email, name: user.name });
+  await enqueueEmail("welcome", user.email, { name: user.name });
   res.status(201).json(user);
 }
